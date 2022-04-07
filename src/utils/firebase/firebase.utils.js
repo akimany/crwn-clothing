@@ -5,6 +5,7 @@ import {
   signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -22,29 +23,35 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 // Set up authentication - class, hence 'new'
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
 
 // singleton, so no 'new' needed
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () =>
+  signInWithRedirect(auth, googleProvider);
 
 // firestore
 // singleton instance
 export const db = getFirestore();
 
 // recieves a user authentication object
-export const makeUserDocumentFromAuth = async (userAuth) => {
-  console.log(userAuth);
-  // takes a unique ID
+export const makeUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
+  if (!userAuth) return;
+  // takes a unique ID from a sign service - signInWithPopup/signInWithRedirect
   const userDocRef = doc(db, 'users', userAuth.uid);
-  console.log(userDocRef);
   const userSnapshot = await getDoc(userDocRef);
-  console.log(userSnapshot.exists());
 
+  // if user data is not there
+  // make/set document using the userSnapshot
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
     const madeAt = new Date();
@@ -54,17 +61,19 @@ export const makeUserDocumentFromAuth = async (userAuth) => {
         displayName,
         email,
         madeAt,
+        ...additionalInformation,
       });
     } catch (error) {
       console.log('error', error.message);
     }
   }
 
-  return userDocRef;
-
   // if user data exists
   // return userDocRef
+  return userDocRef;
+};
 
-  // if usr data is not there
-  // make/set docuement using the userSnapshot
+export const makeAuthUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  return await createUserWithEmailAndPassword(auth, email, password);
 };
