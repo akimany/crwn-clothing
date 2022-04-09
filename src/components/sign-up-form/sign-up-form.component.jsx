@@ -35,9 +35,6 @@ const SignUpForm = () => {
     // check if user has been authenticated
     // make a user doc from what this returns
 
-    //const userDocRef = doc(db, 'user', user);
-    //const userSnapshot = await getDoc(userDocRef);
-
     try {
       const { user } = await makeAuthUserWithEmailAndPassword(email, password);
       await makeUserDocumentFromAuth(user, { displayName });
@@ -58,7 +55,7 @@ const SignUpForm = () => {
 
   return (
     <div className="sign-up-container">
-      <h2>It might be said Don't have an account</h2>
+      <h2>Don't have an account?</h2>
       <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
@@ -101,7 +98,7 @@ const SignUpForm = () => {
             value: confirmPassword,
           }}
         />
-        password
+
         <Button type="submit">Sign Up</Button>
       </form>
     </div>
