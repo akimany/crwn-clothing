@@ -1,7 +1,5 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import {
-  db,
   makeAuthUserWithEmailAndPassword,
   makeUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
@@ -27,10 +25,12 @@ const SignUpForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (password !== confirmPassword) {
       alert('passwords do not match');
       return;
     }
+
     // password match
     // check if user has been authenticated
     // make a user doc from what this returns
@@ -76,6 +76,7 @@ const SignUpForm = () => {
             onChange: handleChange,
             name: 'email',
             value: email,
+            autoComplete: 'email',
           }}
         />
         <FormInput
@@ -86,6 +87,7 @@ const SignUpForm = () => {
             onChange: handleChange,
             name: 'password',
             value: password,
+            autoComplete: 'current-password',
           }}
         />
         <FormInput
@@ -96,6 +98,7 @@ const SignUpForm = () => {
             onChange: handleChange,
             name: 'confirmPassword',
             value: confirmPassword,
+            autoComplete: 'current-password',
           }}
         />
 

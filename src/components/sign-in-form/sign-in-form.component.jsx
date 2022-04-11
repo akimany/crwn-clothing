@@ -24,19 +24,14 @@ const SignInForm = () => {
   };
 
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    await makeUserDocumentFromAuth();
+    await signInWithGooglePopup();
   };
 
   // handleSubmit
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      console.log(response);
+      await signInAuthUserWithEmailAndPassword(email, password);
       resetFormFields();
     } catch (error) {
       switch (error.code) {
@@ -71,6 +66,7 @@ const SignInForm = () => {
             onChange: handleChange,
             name: 'email',
             value: email,
+            autoComplete: 'email',
           }}
         />
         <FormInput
@@ -81,6 +77,7 @@ const SignInForm = () => {
             onChange: handleChange,
             name: 'password',
             value: password,
+            autoComplete: 'current-password',
           }}
         />
         <div className="buttons-container">
