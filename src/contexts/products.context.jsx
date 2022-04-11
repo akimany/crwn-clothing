@@ -3,14 +3,14 @@ import PRODUCTS from '../shop-data.json';
 
 // productsContext
 export const ProductsContext = createContext({
-  products: PRODUCTS,
+  products: [],
   setProducts: () => {},
 });
 
 //productsProvider
 export const ProductsProvider = ({ children }) => {
   const [products, setProducts] = useState(PRODUCTS);
-  const value = { products, setProducts };
+  const value = { products };
   // setup state
   // useEffect
   useEffect(() => {}, []);
