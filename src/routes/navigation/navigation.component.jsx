@@ -20,7 +20,7 @@ import { selectIsCartOpen } from '../../store/cart/cart.selector';
 const Navigation = () => {
   const currentUser = useSelector(selectCurrentUser);
   const isCartOpen = useSelector(selectIsCartOpen);
-
+  console.log(isCartOpen);
   return (
     <Fragment>
       <NavigationContainer>
