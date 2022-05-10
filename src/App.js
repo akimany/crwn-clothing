@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 
 import Home from './routes/home/home.component';
@@ -6,7 +8,26 @@ import Authentication from './routes/authentication/authentication.component';
 import Shop from './routes/shop/shop.component';
 import { Checkout } from './routes/checkout/checkout.component';
 
+import {
+  makeUserDocumentFromAuth,
+  onAuthStateChangedListener,
+} from './utils/firebase/firebase.utils';
+
+import { setCurrentUser } from './store/user/user.action';
+
 const App = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener((user) => {
+      if (user) {
+        makeUserDocumentFromAuth(user);
+      }
+      dispatch(setCurrentUser(user));
+    });
+    return unsubscribe;
+    // he said dispatch will not change, just add it to remove the linting error:
+  }, [dispatch]);
+
   return (
     <Routes>
       <Route path="/" element={<Navigation />}>
