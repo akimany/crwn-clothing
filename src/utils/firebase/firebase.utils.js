@@ -74,7 +74,11 @@ export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+  const queryReady = querySnapshot.docs.map((docSnapshot) =>
+    docSnapshot.data()
+  );
+  console.log('queryReady', queryReady);
+  return queryReady;
 };
 
 // recieves a user authentication object
