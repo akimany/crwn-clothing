@@ -1,4 +1,3 @@
-import { async } from '@firebase/util';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -43,8 +42,10 @@ googleProvider.setCustomParameters({
 
 // singleton, so no 'new' needed
 export const auth = getAuth();
+
 export const signInWithGooglePopup = () =>
   signInWithPopup(auth, googleProvider);
+
 export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider);
 
@@ -61,6 +62,7 @@ export const addCollectionAndDocuments = async (
   // if you try to find something in the firebase DB and it isn't there, firebase will make it
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
+
   objectsToAdd.forEach((object) => {
     // don't need db, collectionRef already was supplied it
     const docRef = doc(collectionRef, object.title.toLowerCase());
@@ -74,11 +76,7 @@ export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
-  const queryReady = querySnapshot.docs.map((docSnapshot) =>
-    docSnapshot.data()
-  );
-  console.log('queryReady', queryReady);
-  return queryReady;
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
 
 // recieves a user authentication object
@@ -110,9 +108,7 @@ export const makeUserDocumentFromAuth = async (
     }
   }
 
-  // if user data exists
-  // return userDocRef
-  return userDocRef;
+  return userSnapshot;
 };
 
 // interface
@@ -132,3 +128,16 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback) =>
   // callback called whenever the auth state changes
   onAuthStateChanged(auth, callback);
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe();
+        resolve(userAuth);
+      },
+      reject
+    );
+  });
+};

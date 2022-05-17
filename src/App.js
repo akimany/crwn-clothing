@@ -9,22 +9,29 @@ import Shop from './routes/shop/shop.component';
 import { Checkout } from './routes/checkout/checkout.component';
 
 import {
+  getCurrentUser,
   makeUserDocumentFromAuth,
   onAuthStateChangedListener,
 } from './utils/firebase/firebase.utils';
 
-import { setCurrentUser } from './store/user/user.action';
+import { checkUserSession } from './store/user/user.action';
 
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-      if (user) {
-        makeUserDocumentFromAuth(user);
-      }
-      dispatch(setCurrentUser(user));
-    });
-    return unsubscribe;
+    // using sagas
+    // getCurrentUser().then((user) => {
+    //   console.log(user);
+    // });
+    dispatch(checkUserSession());
+
+    // const unsubscribe = onAuthStateChangedListener((user) => {
+    //   if (user) {
+    //     makeUserDocumentFromAuth(user);
+    //   }
+    //   dispatch(setCurrentUser(user));
+    // });
+    // return unsubscribe;
     // he said dispatch will not change, just add it to remove the linting error:
   }, [dispatch]);
 
