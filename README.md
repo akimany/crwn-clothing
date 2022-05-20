@@ -1,6 +1,8 @@
 # Working site links:
 With Context: https://starlit-custard-106a86.netlify.app/
+
 With Redux: https://redux--starlit-custard-106a86.netlify.app/
+
 With Stripe integration: https://stripe--starlit-custard-106a86.netlify.app/
 
 
