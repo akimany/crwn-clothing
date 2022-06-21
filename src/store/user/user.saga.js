@@ -64,6 +64,8 @@ export function* isUserAuthenticated() {
 
 export function* signUp({ payload: { email, password, displayName } }) {
   try {
+    console.log(email, password, displayName);
+
     const { user } = yield call(
       makeAuthUserWithEmailAndPassword,
       email,
@@ -81,6 +83,7 @@ export function* signInAfterSignUp({
   yield call(getSnapshotFromUserAuth, user, additionalInformation);
 }
 
+// watcher functions
 export function* onGoogleSignInStart() {
   yield takeLatest(USER_ACTION_TYPES.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
@@ -93,6 +96,7 @@ export function* onEmailSignInStart() {
   yield takeLatest(USER_ACTION_TYPES.EMAIL_SIGN_IN_START, signInWithEmail);
 }
 
+//  payload is passed atuomatically
 export function* onSignUpStart() {
   yield takeLatest(USER_ACTION_TYPES.SIGN_UP_START, signUp);
 }
