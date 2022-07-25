@@ -1,15 +1,27 @@
-import { compose, applyMiddleware } from 'redux';
+import { compose, applyMiddleware, Middleware } from 'redux';
 // switch to configureStore:
 import { legacy_createStore as createStore } from 'redux';
 // For logger: he said action before dispatch, what the action is and how the state looks after the action:
 import logger from 'redux-logger';
-import { rootReducer } from './root-reducer';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { loggerMiddleware } from './middleware/logger';
 // import thunk from 'redux-thunk';
 import createSagaMiddleware from '@redux-saga/core';
 import { rootSaga } from './root-saga';
+import { rootReducer } from './root-reducer';
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
+}
+
+type ExtendedPersistConfig = PersistConfig<RootState> & {
+  whitelist: (keyof RootState)[];
+};
 
 const persistConfig = {
   key: 'root',
@@ -21,12 +33,11 @@ const sagaMiddleware = createSagaMiddleware();
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// library helpers that run before the action hits the reducer - so it hits the middelware first.
 // only for dev
 const middleWares = [
   process.env.NODE_ENV !== 'production' && logger,
   sagaMiddleware,
-].filter(Boolean);
+].filter((middleware): middleware is Middleware => Boolean(middleware));
 
 // for redux-devtools
 const composeEnhancer =
