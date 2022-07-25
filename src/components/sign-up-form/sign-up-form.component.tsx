@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { AuthError, AuthErrorCodes } from 'firebase/auth';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signUpStart } from '../../store/user/user.action';
 import Button from '../button/button.component';
@@ -22,7 +23,7 @@ const SignUpForm = () => {
     setFormFields(defaultFormFields);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
@@ -36,15 +37,15 @@ const SignUpForm = () => {
       dispatch(signUpStart(email, password, displayName));
       resetFormFields();
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
+      if ((error as AuthError).code === AuthErrorCodes.EMAIL_EXISTS) {
         alert('cannot make user, already in use');
       } else {
-        console.log('error', error.message);
+        console.log('error', (error as AuthError).message);
       }
     }
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormFields({ ...formFields, [name]: value });
   };
@@ -56,46 +57,41 @@ const SignUpForm = () => {
       <form onSubmit={handleSubmit}>
         <FormInput
           label="Display Name"
-          inputOptions={{
-            type: 'text',
-            required: true,
-            onChange: handleChange,
-            name: 'displayName',
-            value: displayName,
-          }}
+          type="text"
+          required
+          onChange={handleChange}
+          name="displayName"
+          value={displayName}
         />
+
         <FormInput
           label="Email"
-          inputOptions={{
-            type: 'email',
-            required: true,
-            onChange: handleChange,
-            name: 'email',
-            value: email,
-            autoComplete: 'email',
-          }}
+          type="email"
+          required
+          onChange={handleChange}
+          name="email"
+          value={email}
+          autoComplete="email"
         />
+
         <FormInput
           label="Password"
-          inputOptions={{
-            type: 'password',
-            required: true,
-            onChange: handleChange,
-            name: 'password',
-            value: password,
-            autoComplete: 'current-password',
-          }}
+          type="password"
+          required
+          onChange={handleChange}
+          name="password"
+          value={password}
+          autoComplete="current-password"
         />
+
         <FormInput
           label="Confirm password"
-          inputOptions={{
-            type: 'password',
-            required: true,
-            onChange: handleChange,
-            name: 'confirmPassword',
-            value: confirmPassword,
-            autoComplete: 'current-password',
-          }}
+          type="password"
+          required
+          onChange={handleChange}
+          name="confirmPassword"
+          value={confirmPassword}
+          autoComplete="current-password"
         />
 
         <Button type="submit">Sign Up</Button>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   googleSignInStart,
@@ -34,27 +34,18 @@ const SignInForm = () => {
   };
 
   // handleSubmit
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       dispatch(emailSignInStart(email, password));
       resetFormFields();
     } catch (error) {
-      switch (error.code) {
-        case 'auth/wrong-password':
-          alert('incorrect password for email');
-          break;
-        case 'auth/user-not-found':
-          alert('No user associated with this email');
-          break;
-        default:
-          console.log('error:', error);
-      }
+      console.log('user sign in failed', error);
     }
   };
 
   // handleChange
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormFields({ ...formFields, [name]: value });
   };
@@ -66,26 +57,24 @@ const SignInForm = () => {
       <form onSubmit={handleSubmit}>
         <FormInput
           label="email"
-          inputOptions={{
-            type: 'email',
-            required: true,
-            onChange: handleChange,
-            name: 'email',
-            value: email,
-            autoComplete: 'email',
-          }}
+          type="email"
+          required
+          onChange={handleChange}
+          name="email"
+          value={email}
+          autoComplete="email"
         />
+
         <FormInput
           label="password"
-          inputOptions={{
-            type: 'password',
-            required: true,
-            onChange: handleChange,
-            name: 'password',
-            value: password,
-            autoComplete: 'current-password',
-          }}
+          type="password"
+          required
+          onChange={handleChange}
+          name="password"
+          value={password}
+          autoComplete="current-password"
         />
+
         <ButtonsContainer>
           <Button type="submit">Sign In</Button>
           <Button
