@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import './checkout-item.styles.jsx';
 import {
   Arrow,
   BaseSpan,
@@ -8,7 +7,7 @@ import {
   Quantity,
   RemoveButton,
   Value,
-} from './checkout-item.styles.jsx';
+} from './checkout-item.styles';
 
 import {
   addItemToCart,
@@ -16,8 +15,14 @@ import {
   deleteItemFromCart,
 } from '../../store/cart/cart.action';
 import { selectCartItems } from '../../store/cart/cart.selector';
+import { CartItem } from '../../store/cart/cart.types.js';
+import { FC, memo } from 'react';
 
-export const CheckoutItem = ({ cartItem }) => {
+type CheckoutItemProps = {
+  cartItem: CartItem;
+};
+
+export const CheckoutItem: FC<CheckoutItemProps> = memo(({ cartItem }) => {
   const { name, imageUrl, price, quantity } = cartItem;
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
@@ -43,4 +48,4 @@ export const CheckoutItem = ({ cartItem }) => {
       <RemoveButton onClick={deleteItemHandler}>&#10005;</RemoveButton>
     </CheckoutItemContainer>
   );
-};
+});

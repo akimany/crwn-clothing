@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectCartItems } from '../../store/cart/cart.selector';
@@ -7,16 +8,16 @@ import {
   CartDropdownContainer,
   CartItems,
   EmptyMessage,
-} from './cart-dropdown.styles.jsx';
+} from './cart-dropdown.styles';
 
 const CartDropdown = () => {
   const cartItems = useSelector(selectCartItems);
-
-  // navigate to
   const navigate = useNavigate();
-  const goToCheckoutHandler = () => {
+
+  // he said react is memoizing the function, not the return of the function
+  const goToCheckoutHandler = useCallback(() => {
     navigate('/checkout');
-  };
+  }, []);
 
   return (
     <CartDropdownContainer>
